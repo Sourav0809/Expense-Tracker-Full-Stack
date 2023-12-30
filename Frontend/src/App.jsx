@@ -1,7 +1,12 @@
 import React from "react";
+import Authentication from "./components/auth/Authentication";
 
 const App = () => {
-  return <div>App</div>;
+  return (
+    <>
+      <Authentication />
+    </>
+  );
 };
 
 export default App;
