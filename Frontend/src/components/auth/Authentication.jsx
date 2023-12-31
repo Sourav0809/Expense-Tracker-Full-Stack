@@ -25,7 +25,7 @@ const Authentication = () => {
 
   const submitedFormHandeler = async (e) => {
     e.preventDefault();
-    const submitedval = {
+    const signupInfo = {
       userName,
       userEmail,
       userPhone,
@@ -37,11 +37,11 @@ const Authentication = () => {
       /* -------------------------------------------------------------------------- */
 
       if (!loggedIn && !onForgotPwd) {
-        const data = await axios.post(
+        const signupRes = await axios.post(
           "http://localhost:4000/auth/signup",
-          submitedval
+          signupInfo
         );
-        console.log(data);
+        console.log(signupRes);
       }
 
       /* -------------------------------------------------------------------------- */
@@ -49,8 +49,17 @@ const Authentication = () => {
       /* -------------------------------------------------------------------------- */
 
       if (loggedIn && !onForgotPwd) {
-        console.log("on the login page ");
-        console.log(submitedval);
+        const loginInfo = {
+          userEmail,
+          userPwd,
+        };
+
+        const loginRes = await axios.post(
+          "http://localhost:4000/auth/login",
+          loginInfo
+        );
+
+        console.log(loginRes);
       }
 
       /* -------------------------------------------------------------------------- */
@@ -61,7 +70,7 @@ const Authentication = () => {
         console.log("forgot passowrd handeler");
       }
     } catch (error) {
-      console.log(error.response.data.status);
+      console.log(error);
     }
     setUserEmail("");
     setUserPwd("");
