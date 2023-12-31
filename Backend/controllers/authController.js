@@ -1,5 +1,5 @@
 const userModel = require('../models/userModel')
-
+const bcrypt = require('bcrypt')
 const authController = {
     onUserSignUp: async (req, res) => {
         const userName = req.body.userName
@@ -11,11 +11,13 @@ const authController = {
             const finduser = findusers[0]
             if (finduser) {
                 res.status(400).send({ message: "User Exist" });
-
             }
             else {
-                const response = userModel.create({ userName, userEmail, userPhone, userPwd })
-                res.send({ status: "Success", id: response.id })
+                const hashPwd = await bcrypt.hash(userPwd, 10)
+                const createdUser = await userModel.create({ userName, userEmail, userPhone, userPwd: hashPwd })
+                if (createdUser) {
+                    res.send({ status: "Success", id: createdUser.id })
+                }
             }
 
         } catch (error) {
@@ -34,7 +36,9 @@ const authController = {
                 const findedUser = findedUsers[0]
                 // if user found then we have to check the password
                 if (findedUser) {
-                    if (findedUser.userPwd === userPwd) {
+                    const match = await bcrypt.compare(userPwd, findedUser.userPwd);
+                    console.log(match)
+                    if (match) {
                         res.send({ status: "success", message: "successfully login" })
                     }
                     else {
