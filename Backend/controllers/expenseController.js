@@ -1,22 +1,23 @@
 const expenseModel = require('../models/expenseModel')
-
+const userModel = require('../models/userModel')
+const { decodeToken } = require('../helperFunctions')
 const expenseController = {
 
     // when user add some expense 
     addExpense: async (req, res) => {
+        const { token } = req.headers
+        const { date, name, price, category } = req.body
 
-        const date = req.body.date
-        const name = req.body.name
-        const price = req.body.price
-        const category = req.body.category
-        console.log(date, name, price, category)
         try {
-
-            const addedExpense = await expenseModel.create({ date, name, price, category })
+            const { email } = decodeToken(token)
+            const findUsers = await userModel.findAll({ where: { userEmail: email } })
+            const userId = findUsers[0].id
+            const addedExpense = await expenseModel.create({ date, name, price, category, userId })
             res.send({ staus: "Success", id: addedExpense.id })
 
 
         } catch (error) {
+            console.log(error)
             res.status(400).send({ message: "error try again !" })
         }
     },
@@ -24,10 +25,19 @@ const expenseController = {
 
     // when user want to fecth all expenses 
     getExpense: async (req, res) => {
+        const { token } = req.headers
+        console.log(token)
         try {
-            const allExpenses = await expenseModel.findAll()
-            res.send(allExpenses)
+            if (token) {
+                const { email, password } = decodeToken(token)
+                const findUser = await userModel.findAll({ where: { userEmail: email } })
+                const userId = findUser[0].id
+                const allExpenses = await expenseModel.findAll({ where: { userId: userId } })
+                res.send(allExpenses)
+
+            }
         } catch (error) {
+            console.log(error)
             res.status(400).send({ message: "error while getting the expenses" })
         }
     },

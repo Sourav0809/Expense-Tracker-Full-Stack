@@ -2,13 +2,19 @@ import { useState } from "react";
 import { RxComponent1 } from "react-icons/rx";
 import React from "react";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { loginAction } from "../../store/actions/authActions";
 const Authentication = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [loggedIn, setLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [userPhone, setUserPhone] = useState("");
   const [userPwd, setUserPwd] = useState("");
   const [onForgotPwd, setOnForgotPwd] = useState(false);
+
   /* -------------------------------------------------------------------------- */
   /*                           SWITCH LOGIN OR SIGN UP                          */
   /* -------------------------------------------------------------------------- */
@@ -37,11 +43,17 @@ const Authentication = () => {
       /* -------------------------------------------------------------------------- */
 
       if (!loggedIn && !onForgotPwd) {
-        const signupRes = await axios.post(
+        const { data } = await axios.post(
           "http://localhost:4000/auth/signup",
           signupInfo
         );
-        console.log(signupRes);
+
+        // storing the token into local storage
+        if (data) {
+          localStorage.setItem("token", data.token);
+          dispatch(loginAction());
+          navigate("/expenses");
+        }
       }
 
       /* -------------------------------------------------------------------------- */
@@ -54,12 +66,17 @@ const Authentication = () => {
           userPwd,
         };
 
-        const loginRes = await axios.post(
+        const { data } = await axios.post(
           "http://localhost:4000/auth/login",
           loginInfo
         );
 
-        console.log(loginRes);
+        // storing the token into local storage
+        if (data) {
+          localStorage.setItem("token", data.token);
+          dispatch(loginAction());
+          navigate("/expenses");
+        }
       }
 
       /* -------------------------------------------------------------------------- */

@@ -1,13 +1,19 @@
 import axios from "axios";
 import { setExpenses } from "../reducers/expenseSlice";
 
+
+
 // for storing a new expense
 export const setExpensesAction = (expense) => {
     return async (dispatch, getState) => {
-        try {
-            console.log('hello')
-            const { data } = await axios.post("http://localhost:4000/user/addexpense", expense)
 
+        try {
+            const token = localStorage.getItem('token')
+
+            const { data } = await axios.post("http://localhost:4000/user/addexpense", expense, {
+                headers: { token: token }
+            }
+            )
             if (data) {
                 expense.id = data.id
                 const prevExpenses = getState().expenses.expenses
@@ -23,9 +29,12 @@ export const setExpensesAction = (expense) => {
 
 
 export const getExpensesAction = () => {
-    return async (dispatch, getState) => {
+    return async (dispatch) => {
         try {
-            const { data } = await axios.get("http://localhost:4000/user/getexpenses")
+            const token = localStorage.getItem('token')
+            const { data } = await axios.get("http://localhost:4000/user/getexpenses", {
+                headers: { token: token }
+            })
             if (data) {
                 dispatch(setExpenses(data))
             }
@@ -37,9 +46,9 @@ export const getExpensesAction = () => {
 
 
 export const deleteExpenseAction = (id) => {
-    console.log('hello delere')
     return async (dispatch, getState) => {
         try {
+            const token = localStorage.getItem('token')
             const { data } = await axios.delete("http://localhost:4000/user/deleteexpense", { data: { id: id } })
             if (data) {
                 const allExpenses = getState().expenses.expenses

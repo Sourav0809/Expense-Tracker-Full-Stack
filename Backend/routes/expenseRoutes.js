@@ -8,8 +8,7 @@ router.post('/addexpense', addExpense)
 // for fetching the all expenses
 router.get('/getexpenses', getExpense)
 
-
 // for deleing expenses
-
 router.delete('/deleteexpense', deleteExpense)
+
 module.exports = router

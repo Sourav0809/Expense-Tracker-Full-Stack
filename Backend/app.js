@@ -5,16 +5,20 @@ const app = express()
 const authRoutes = require('./routes/authRoutes')
 const expenseRoutes = require('./routes/expenseRoutes')
 const db = require('./util/database')
+const userModel = require('./models/userModel')
+const expenseModel = require('./models/expenseModel')
 
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-
-
-
 app.use('/auth', authRoutes)
 app.use('/user', expenseRoutes)
+
+userModel.hasMany(expenseModel)
+expenseModel.belongsTo(userModel)
+
+
 
 db.sync()
     .then(() => {
