@@ -1,5 +1,7 @@
 const userModel = require('../models/userModel')
 const bcrypt = require('bcrypt')
+
+
 const authController = {
     onUserSignUp: async (req, res) => {
         const userName = req.body.userName
@@ -46,7 +48,7 @@ const authController = {
                     }
                 }
                 else {
-                    res.status(400).send({ message: "User does not exist" })
+                    res.status(404).send({ message: "User does not exist" })
                 }
             }
         } catch (error) {

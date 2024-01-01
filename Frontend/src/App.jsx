@@ -1,10 +1,8 @@
-import React from "react";
-import Authentication from "./components/auth/Authentication";
-
+import MyRoutes from "./routes/MyRoutes";
 const App = () => {
   return (
     <>
-      <Authentication />
+      <MyRoutes />
     </>
   );
 };
