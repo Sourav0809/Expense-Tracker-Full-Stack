@@ -24,7 +24,7 @@ expenseModel.belongsTo(userModel)
 userModel.hasMany(orderModel)
 orderModel.belongsTo(userModel)
 
-db.sync({ force: true })
+db.sync()
     .then(() => {
         app.listen(4000, () => {
             console.log('App Started ..')

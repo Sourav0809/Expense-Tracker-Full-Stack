@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 const App = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   useEffect(() => {
     (async () => {
       try {

@@ -1,5 +1,5 @@
 import { setIsPremium } from "../reducers/buyPremiumSlice";
-import { BUY_PREMIUM_ENDPOINT, UPDATE_PREMIUM_ENDPOINT } from "../../constant/apiEndpoints";
+import { BUY_PREMIUM_ENDPOINT, UPDATE_PREMIUM_ENDPOINT, UPDATE_STATUS_FAILED } from "../../constant/apiEndpoints";
 import axios from "axios";
 
 const buyPremiumAction = (token) => {
@@ -37,10 +37,16 @@ const buyPremiumAction = (token) => {
                 },
             };
 
+
             const rzp1 = new Razorpay(options);
             rzp1.open();
-            rzp1.on("payment.failed", (res) => {
-                alert("Something went wrong");
+            rzp1.on("payment.failed", async (res) => {
+                console.log("hello there")
+                try {
+                    await axios.post(UPDATE_STATUS_FAILED, { order_id: options.order_id, }, { headers: { token: token } });
+                } catch (error) {
+                    console.log(error)
+                }
             });
 
         } catch (error) {

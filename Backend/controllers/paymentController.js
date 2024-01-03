@@ -35,23 +35,34 @@ const paymentController = {
             res.status(400).send({ message: "some error", error: error })
         }
     },
+
     updatePremiumStatus: async (req, res) => {
         try {
-
-            // console.log(req.headers)
-            console.log(req.body)
-            const { order_id, payment_id } = req.body
-            const findedorder = await orderModel.findOne({ where: { orderId: order_id } })
-            await findedorder.update({ paymentId: payment_id, status: "success" })
-            res.send({ success: true })
+            const { order_id, payment_id } = req.body;
+            const findedorder = await orderModel.findOne({ where: { orderId: order_id } });
+            await findedorder.update({ paymentId: payment_id, status: "success" });
+            res.send({ success: true });
 
         } catch (error) {
+            // Handle the original error
+            res.status(400).send({ message: "some error", error: error });
 
-            console.log(error)
-            res.status(400).send({ message: "some error", error: error })
         }
+    },
 
+    updateStausToFailed: async (req, res) => {
+        try {
+            const { order_id } = req.body;
+            const findedorder = await orderModel.findOne({ where: { orderId: order_id } });
+            await findedorder.update({ status: "failed" });
+            res.status(400).send({ success: false, message: "Payment failed" });
+        } catch (error) {
+            // Handle the original error
+            res.status(400).send({ message: "some error", error: error });
+        }
     }
+
+
 
 }
 
