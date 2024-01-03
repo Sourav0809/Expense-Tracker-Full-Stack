@@ -1,8 +1,8 @@
 const expenseModel = require('../models/expenseModel')
 const userModel = require('../models/userModel')
 const { decodeToken } = require('../helperFunctions')
-const expenseController = {
 
+const expenseController = {
     // when user add some expense 
     addExpense: async (req, res) => {
         const { token } = req.headers
@@ -26,7 +26,6 @@ const expenseController = {
     // when user want to fecth all expenses 
     getExpense: async (req, res) => {
         const { token } = req.headers
-        console.log(token)
         try {
             if (token) {
                 const { email, password } = decodeToken(token)
@@ -44,7 +43,6 @@ const expenseController = {
 
 
     // when user want to delete his/her expense 
-
     deleteExpense: async (req, res) => {
         const id = req.body.id
 
@@ -63,4 +61,7 @@ const expenseController = {
 
 }
 
+
+
 module.exports = expenseController
+
