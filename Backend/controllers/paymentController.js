@@ -7,7 +7,6 @@ const { decodeToken } = require('../helperFunctions')
 
 const paymentController = {
     buyPremium: async (req, res) => {
-        console.log(req.user)
         const { id } = req.user
         try {
             const rzp = new Razorpay({
@@ -37,14 +36,19 @@ const paymentController = {
     },
 
     updatePremiumStatus: async (req, res) => {
+        console.log(req.user)
         try {
             const { order_id, payment_id } = req.body;
             const findedorder = await orderModel.findOne({ where: { orderId: order_id } });
-            await findedorder.update({ paymentId: payment_id, status: "success" });
+            await Promise.all([
+                findedorder.update({ paymentId: payment_id, status: "success" }),
+                req.user.update({ isPremiumUser: true })
+            ]);
             res.send({ success: true });
 
         } catch (error) {
             // Handle the original error
+            console.log(error)
             res.status(400).send({ message: "some error", error: error });
 
         }

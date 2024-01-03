@@ -37,11 +37,10 @@ const buyPremiumAction = (token) => {
                 },
             };
 
-
             const rzp1 = new Razorpay(options);
             rzp1.open();
+
             rzp1.on("payment.failed", async (res) => {
-                console.log("hello there")
                 try {
                     await axios.post(UPDATE_STATUS_FAILED, { order_id: options.order_id, }, { headers: { token: token } });
                 } catch (error) {
