@@ -1,18 +1,24 @@
 import { useDispatch, useSelector } from "react-redux";
 import Expense from "./ui/Expense";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getExpensesAction } from "../../store/actions/expenseActions";
-import buyPremiumAction from "../../store/actions/buyPremiumAction";
+import {
+  buyPremiumAction,
+  getLeaderBoardAction,
+} from "../../store/actions/PremiumActions";
+import LeaderBoard from "../leaderboard/LeaderBoard";
 const ExpenseContainer = () => {
   const dispatch = useDispatch();
+  const [showLeaderboard, setShowLeaderBoard] = useState(false);
   const { expenses } = useSelector((state) => state.expenses);
-  const { isPremiumUser } = useSelector((state) => state.premiumUser);
+  const { isPremiumUser, leaderBoard } = useSelector((state) => state.premium);
 
   // useffect for fetching all the expenses on the page refresh
   useEffect(() => {
     dispatch(getExpensesAction());
   }, []);
 
+  console.log(leaderBoard);
   // when user want to buy premium
   const buyPremiumHandeler = async () => {
     const token = localStorage.getItem("token");
@@ -21,15 +27,28 @@ const ExpenseContainer = () => {
     }
   };
 
+  // showleaderBoard
+  const showLeaderboardHandeler = () => {
+    console.log("1111");
+    dispatch(getLeaderBoardAction());
+    setShowLeaderBoard(true);
+  };
+
   return (
     <div className=" mt-10 flex flex-col gap-2">
       <div className="flex justify-center items-center ">
-        <button
-          className=" bg-blue-800 text-white px-5 py-2 rounded-md"
-          onClick={buyPremiumHandeler}
-        >
-          {isPremiumUser ? "Premium Member" : "Buy Premium"}
-        </button>
+        {isPremiumUser ? (
+          <button className=" bg-blue-800 text-white px-5 py-2 rounded-md">
+            Premium User
+          </button>
+        ) : (
+          <button
+            className=" bg-blue-800 text-white px-5 py-2 rounded-md"
+            onClick={buyPremiumHandeler}
+          >
+            Buy Premium
+          </button>
+        )}
       </div>
 
       {expenses.map((values) => {
@@ -44,6 +63,21 @@ const ExpenseContainer = () => {
           />
         );
       })}
+      {isPremiumUser && (
+        <div>
+          <button onClick={showLeaderboardHandeler}>Show LeaderBoard</button>
+          {showLeaderboard &&
+            leaderBoard.map((val) => {
+              return (
+                <LeaderBoard
+                  key={Math.random()}
+                  name={val.name}
+                  totalAmount={val.totalAmount}
+                />
+              );
+            })}
+        </div>
+      )}
     </div>
   );
 };

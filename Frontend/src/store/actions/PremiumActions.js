@@ -1,20 +1,12 @@
-import { setIsPremium } from "../reducers/buyPremiumSlice";
-import { BUY_PREMIUM_ENDPOINT, UPDATE_PREMIUM_ENDPOINT, UPDATE_STATUS_FAILED } from "../../constant/apiEndpoints";
+import { setIsPremium, setLeaderBoard } from "../reducers/premiumSlice";
+import { BUY_PREMIUM_ENDPOINT, UPDATE_PREMIUM_ENDPOINT, UPDATE_STATUS_FAILED, } from "../../constant/apiEndpoints";
 import axios from "axios";
 
-const buyPremiumAction = (token) => {
+export const buyPremiumAction = (token) => {
     return async (dispatch) => {
 
         try {
-            const { data } = await axios.post(
-                BUY_PREMIUM_ENDPOINT,
-                {},
-                {
-                    headers: { token: token },
-                }
-            );
-
-
+            const { data } = await axios.post(BUY_PREMIUM_ENDPOINT, {}, { headers: { token: token } });
             const options = {
                 key: data.key_id,
                 order_id: data.order.id,
@@ -55,4 +47,17 @@ const buyPremiumAction = (token) => {
 }
 
 
-export default buyPremiumAction
+
+
+export const getLeaderBoardAction = () => {
+    return async (dispatch, getState) => {
+        try {
+            const { data } = await axios.get('http://localhost:4000/premium/getleaderboard')
+            dispatch(setLeaderBoard(data))
+        } catch (error) {
+            console.log(error)
+        }
+    }
+}
+
+

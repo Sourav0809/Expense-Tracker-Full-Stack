@@ -1,7 +1,8 @@
 const userModel = require('../models/userModel')
 const { decodeToken } = require('../helperFunctions')
-
 const bcrypt = require('bcrypt')
+
+
 const authMiddleware = async (req, res, next) => {
     try {
         const { token } = req.headers
@@ -14,7 +15,6 @@ const authMiddleware = async (req, res, next) => {
                 next()
             }
             else {
-
                 res.status(400).send({ message: 'some error occured' })
             }
 

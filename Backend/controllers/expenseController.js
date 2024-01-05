@@ -5,13 +5,10 @@ const { decodeToken } = require('../helperFunctions')
 const expenseController = {
     // when user add some expense 
     addExpense: async (req, res) => {
-        const { token } = req.headers
         const { date, name, price, category } = req.body
-
+        const { id } = req.user
         try {
-            const { email } = decodeToken(token)
-            const findUsers = await userModel.findAll({ where: { userEmail: email } })
-            const userId = findUsers[0].id
+            const userId = id
             const addedExpense = await expenseModel.create({ date, name, price, category, userId })
             res.send({ staus: "Success", id: addedExpense.id })
 
@@ -25,14 +22,15 @@ const expenseController = {
 
     // when user want to fecth all expenses 
     getExpense: async (req, res) => {
-        const { token } = req.headers
+        const { userEmail, id, isPremiumUser } = req.user
         try {
-            if (token) {
-                const { email, password } = decodeToken(token)
-                const findUser = await userModel.findAll({ where: { userEmail: email } })
-                const userId = findUser[0].id
-                const allExpenses = await expenseModel.findAll({ where: { userId: userId } })
-                res.send(allExpenses)
+            if (userEmail && id) {
+                const allExpenses = await expenseModel.findAll({ where: { userId: id } })
+                const userExpenses = {
+                    expenses: allExpenses,
+                    isPremiumUser: isPremiumUser
+                }
+                res.send(userExpenses)
 
             }
         } catch (error) {
@@ -45,17 +43,15 @@ const expenseController = {
     // when user want to delete his/her expense 
     deleteExpense: async (req, res) => {
         const id = req.body.id
-
         try {
-
             if (id) {
-                const findedExpenses = await expenseModel.findAll({ where: { id: id } })
-                const deletedRes = await findedExpenses[0].destroy()
+                const findedExpenses = await expenseModel.findOne({ where: { id: id } })
+                const deletedRes = await findedExpenses.destroy()
                 res.send({ status: "Delete Success", id: deletedRes.id })
 
             }
         } catch (error) {
-            res.staus.send({ message: "Error while deleting the expense" })
+            res.staus(400).send({ message: "Error while deleting the expense" })
         }
     }
 

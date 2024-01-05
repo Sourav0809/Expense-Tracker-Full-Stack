@@ -1,29 +1,42 @@
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
-const app = express()
+
+// importing routes
 const authRoutes = require('./routes/authRoutes')
 const expenseRoutes = require('./routes/expenseRoutes')
 const paymentRoutes = require('./routes/paymentRoutes')
+const premiumRoutes = require('./routes/premiumRoutes')
+
+// importing database
 const db = require('./util/database')
+
+// importing models 
 const userModel = require('./models/userModel')
 const expenseModel = require('./models/expenseModel')
 const orderModel = require("./models/orderModel")
+
+const app = express()
+
+// applying middlewares
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
+//applying routes
 app.use('/auth', authRoutes)
 app.use('/user', expenseRoutes)
 app.use('/payment', paymentRoutes)
+app.use('/premium', premiumRoutes)
 
 // associations
 userModel.hasMany(expenseModel)
 expenseModel.belongsTo(userModel)
-
 userModel.hasMany(orderModel)
 orderModel.belongsTo(userModel)
 
+
+// sync database and listen
 db.sync()
     .then(() => {
         app.listen(4000, () => {
@@ -32,3 +45,6 @@ db.sync()
 
     })
     .catch(err => console.log(err))
+
+
+

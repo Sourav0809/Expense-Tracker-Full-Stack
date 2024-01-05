@@ -9,3 +9,6 @@ export const DELETE_EXPENSE_ENDPOINT = "http://localhost:4000/user/deleteexpense
 export const GET_EXPENSES_ENDPOINT = "http://localhost:4000/user/getexpenses"
 
 
+// API endPoints for premium user 
+export const GET_LEADERBOARD_DATA = "http://localhost:5173/premium/getleaderboard"
+
