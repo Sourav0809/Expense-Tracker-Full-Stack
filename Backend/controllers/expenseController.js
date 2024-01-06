@@ -5,13 +5,16 @@ const { decodeToken } = require('../helperFunctions')
 const expenseController = {
     // when user add some expense 
     addExpense: async (req, res) => {
+
         const { date, name, price, category } = req.body
-        const { id } = req.user
+        const { id, totalTransaction } = req.user
         try {
             const userId = id
             const addedExpense = await expenseModel.create({ date, name, price, category, userId })
-            res.send({ staus: "Success", id: addedExpense.id })
-
+            const oldTransactions = Number(totalTransaction)
+            const currAmount = Number(price)
+            const updateTotalTransaction = await req.user.update({ totalTransaction: oldTransactions + currAmount })
+            res.send({ staus: "Success", id: addedExpense.id, totalTransaction: updateTotalTransaction })
 
         } catch (error) {
             console.log(error)
@@ -22,13 +25,14 @@ const expenseController = {
 
     // when user want to fecth all expenses 
     getExpense: async (req, res) => {
-        const { userEmail, id, isPremiumUser } = req.user
+        const { userEmail, id, isPremiumUser, totalTransaction } = req.user
         try {
             if (userEmail && id) {
                 const allExpenses = await expenseModel.findAll({ where: { userId: id } })
                 const userExpenses = {
                     expenses: allExpenses,
-                    isPremiumUser: isPremiumUser
+                    isPremiumUser,
+                    totalTransaction
                 }
                 res.send(userExpenses)
 
@@ -46,7 +50,10 @@ const expenseController = {
         try {
             if (id) {
                 const findedExpenses = await expenseModel.findOne({ where: { id: id } })
+                const totalTransaction = Number(req.user.totalTransaction)
+                const expenseAmount = Number(findedExpenses.price)
                 const deletedRes = await findedExpenses.destroy()
+                await req.user.update({ totalTransaction: totalTransaction - expenseAmount })
                 res.send({ status: "Delete Success", id: deletedRes.id })
 
             }
