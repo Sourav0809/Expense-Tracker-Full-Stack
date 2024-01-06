@@ -29,7 +29,6 @@ const ExpenseContainer = () => {
 
   // showleaderBoard
   const showLeaderboardHandeler = () => {
-    console.log("1111");
     dispatch(getLeaderBoardAction());
     setShowLeaderBoard(true);
   };
@@ -71,7 +70,7 @@ const ExpenseContainer = () => {
               return (
                 <LeaderBoard
                   key={Math.random()}
-                  name={val.name}
+                  userName={val.userName}
                   totalAmount={val.totalAmount}
                 />
               );
