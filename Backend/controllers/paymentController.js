@@ -1,14 +1,13 @@
+const sequelize = require('../util/database')
 const Razorpay = require("razorpay")
-const userModel = require('../models/userModel')
 const orderModel = require('../models/orderModel')
 const { RZP_KEY_ID, RZP_KEY_SECRET } = require('../constants')
-const { decodeToken } = require('../helperFunctions')
-
 
 const paymentController = {
     buyPremium: async (req, res) => {
         const { id } = req.user
         try {
+
             const rzp = new Razorpay({
                 key_id: RZP_KEY_ID,
                 key_secret: RZP_KEY_SECRET
@@ -36,19 +35,19 @@ const paymentController = {
     },
 
     updatePremiumStatus: async (req, res) => {
-        console.log(req.user)
+        let t;
         try {
+            t = await sequelize.transaction()
             const { order_id, payment_id } = req.body;
             const findedorder = await orderModel.findOne({ where: { orderId: order_id } });
             await Promise.all([
-                findedorder.update({ paymentId: payment_id, status: "success" }),
-                req.user.update({ isPremiumUser: true })
-            ]);
+                findedorder.update({ paymentId: payment_id, status: "success" }, { transaction: t }),
+                req.user.update({ isPremiumUser: true }, { transaction: t })
+            ])
+            await t.commit()
             res.send({ success: true });
-
         } catch (error) {
-            // Handle the original error
-            console.log(error)
+            await t.rollback()
             res.status(400).send({ message: "some error", error: error });
 
         }

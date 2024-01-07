@@ -7,8 +7,11 @@ import {
   getLeaderBoardAction,
 } from "../../store/actions/PremiumActions";
 import LeaderBoard from "../leaderboard/LeaderBoard";
+import { useNavigate } from "react-router-dom";
+import { logOutAction } from "../../store/actions/authActions";
 const ExpenseContainer = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [showLeaderboard, setShowLeaderBoard] = useState(false);
   const { expenses } = useSelector((state) => state.expenses);
   const { isPremiumUser, leaderBoard } = useSelector((state) => state.premium);
@@ -33,9 +36,16 @@ const ExpenseContainer = () => {
     setShowLeaderBoard(true);
   };
 
+  // on click on logout
+  const logOutHandeler = () => {
+    dispatch(logOutAction());
+    navigate("/auth");
+    localStorage.clear();
+  };
+
   return (
     <div className=" mt-10 flex flex-col gap-2">
-      <div className="flex justify-center items-center ">
+      <div className="flex justify-center items-center gap-2 ">
         {isPremiumUser ? (
           <button className=" bg-blue-800 text-white px-5 py-2 rounded-md">
             Premium User
@@ -48,6 +58,12 @@ const ExpenseContainer = () => {
             Buy Premium
           </button>
         )}
+        <button
+          onClick={logOutHandeler}
+          className=" bg-blue-800 text-white px-5 py-2 rounded-md"
+        >
+          Log Out
+        </button>
       </div>
 
       {expenses.map((values) => {
@@ -71,7 +87,7 @@ const ExpenseContainer = () => {
                 <LeaderBoard
                   key={Math.random()}
                   userName={val.userName}
-                  totalAmount={val.totalAmount}
+                  totalAmount={val.totalTransaction}
                 />
               );
             })}

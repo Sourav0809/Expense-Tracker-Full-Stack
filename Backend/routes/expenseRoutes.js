@@ -1,6 +1,12 @@
+//importing express 
 const express = require('express')
+
+// importing controllers 
 const { addExpense, getExpense, deleteExpense } = require('../controllers/expenseController')
+
+// importing middlewares 
 const authMiddleware = require('../middlewares/authMiddleware')
+
 const router = express.Router()
 
 // for adding some new expenses

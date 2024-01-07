@@ -1,23 +1,26 @@
 const expenseModel = require('../models/expenseModel')
-const userModel = require('../models/userModel')
-const { decodeToken } = require('../helperFunctions')
+const sequelize = require("../util/database")
+
 
 const expenseController = {
     // when user add some expense 
     addExpense: async (req, res) => {
-
         const { date, name, price, category } = req.body
         const { id, totalTransaction } = req.user
+        let t;
         try {
+            // crating the transaction object 
+            t = await sequelize.transaction()
             const userId = id
-            const addedExpense = await expenseModel.create({ date, name, price, category, userId })
+            const addedExpense = await expenseModel.create({ date, name, price, category, userId, }, { transaction: t })
             const oldTransactions = Number(totalTransaction)
             const currAmount = Number(price)
-            const updateTotalTransaction = await req.user.update({ totalTransaction: oldTransactions + currAmount })
+            const updateTotalTransaction = await req.user.update({ totalTransaction: oldTransactions + currAmount }, { transaction: t })
             res.send({ staus: "Success", id: addedExpense.id, totalTransaction: updateTotalTransaction })
-
+            await t.commit()
         } catch (error) {
             console.log(error)
+            await t.rollback()
             res.status(400).send({ message: "error try again !" })
         }
     },
@@ -47,17 +50,21 @@ const expenseController = {
     // when user want to delete his/her expense 
     deleteExpense: async (req, res) => {
         const id = req.body.id
+        let t;
         try {
             if (id) {
+                // crating the transaction object 
+                t = await sequelize.transaction()
                 const findedExpenses = await expenseModel.findOne({ where: { id: id } })
                 const totalTransaction = Number(req.user.totalTransaction)
                 const expenseAmount = Number(findedExpenses.price)
-                const deletedRes = await findedExpenses.destroy()
-                await req.user.update({ totalTransaction: totalTransaction - expenseAmount })
+                const deletedRes = await findedExpenses.destroy({ transaction: t })
+                await req.user.update({ totalTransaction: totalTransaction - expenseAmount }, { transaction: t })
                 res.send({ status: "Delete Success", id: deletedRes.id })
-
+                await t.commit()
             }
         } catch (error) {
+            await t.rollback()
             res.staus(400).send({ message: "Error while deleting the expense" })
         }
     }

@@ -11,13 +11,11 @@ const App = () => {
   useEffect(() => {
     (async () => {
       try {
-        if (localStorage.length !== 0) {
-          const token = localStorage.getItem("token");
-          console.log("hello");
-          const { data } = await axios.post(
-            "http://localhost:4000/auth/authenticateuser",
-            { token: token }
-          );
+        const token = localStorage.getItem("token");
+        if (token) {
+          await axios.post("http://localhost:4000/auth/authenticateuser", {
+            token: token,
+          });
           dispatch(loginAction());
           navigate("/expenses");
         } else {
