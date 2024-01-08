@@ -5,6 +5,8 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { loginAction } from "../../store/actions/authActions";
+import { forgotpwdAction } from "../../store/actions/authActions";
+
 const Authentication = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -84,7 +86,9 @@ const Authentication = () => {
       /* -------------------------------------------------------------------------- */
 
       if (onForgotPwd) {
-        console.log("forgot passowrd handeler");
+        if (userEmail) {
+          dispatch(forgotpwdAction(userEmail));
+        }
       }
     } catch (error) {
       console.log(error);
@@ -111,7 +115,11 @@ const Authentication = () => {
       <div className=" m-auto  mt-10 lg:w-[70rem] w-full">
         <div className=" p-7 flex flex-col gap-3">
           <h1 className="text-5xl font-semibold">
-            {!loggedIn ? "Create Account" : "Log In"}
+            {!loggedIn
+              ? "Create Account"
+              : onForgotPwd
+              ? "Forgot Password"
+              : "Log In"}
           </h1>
 
           <div className="mt-7 flex flex-col gap-2">
@@ -194,7 +202,11 @@ const Authentication = () => {
                 type="submit"
                 className=" py-2 px-10 bg-[#1877f2] font-semibold text-white rounded-md"
               >
-                {!loggedIn ? "Create Account" : "Log In"}
+                {!loggedIn
+                  ? "Create Account"
+                  : onForgotPwd
+                  ? "Forgot Passowrd"
+                  : "Log In"}
               </button>
             </div>
 

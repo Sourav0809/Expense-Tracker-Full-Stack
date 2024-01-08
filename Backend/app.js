@@ -1,9 +1,11 @@
 const express = require('express')
 
-
 // importing middlewares 
 const cors = require('cors')
 const bodyParser = require('body-parser')
+
+// importing env
+require('dotenv').config()
 
 // importing routes
 const authRoutes = require('./routes/authRoutes')
@@ -42,7 +44,7 @@ orderModel.belongsTo(userModel)
 // sync database and listen
 db.sync()
     .then(() => {
-        app.listen(4000, () => {
+        app.listen(process.env.RUNNING_PORT, () => {
             console.log('App Started ..')
         })
 

@@ -1,5 +1,5 @@
 import { setIsPremium, setLeaderBoard } from "../reducers/premiumSlice";
-import { BUY_PREMIUM_ENDPOINT, UPDATE_PREMIUM_ENDPOINT, UPDATE_STATUS_FAILED, } from "../../constant/apiEndpoints";
+import { BUY_PREMIUM_ENDPOINT, UPDATE_PREMIUM_ENDPOINT, UPDATE_STATUS_FAILED, } from "../../api/agent";
 import axios from "axios";
 
 export const buyPremiumAction = (token) => {

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { setExpenses } from "../reducers/expenseSlice";
-import { ADD_EXPENSE_ENDPOINT, DELETE_EXPENSE_ENDPOINT, GET_EXPENSES_ENDPOINT } from "../../constant/apiEndpoints";
+import { ADD_EXPENSE_ENDPOINT, DELETE_EXPENSE_ENDPOINT, GET_EXPENSES_ENDPOINT } from "../../api/agent";
 import { setIsPremium } from "../reducers/premiumSlice";
 
 // for storing a new expense

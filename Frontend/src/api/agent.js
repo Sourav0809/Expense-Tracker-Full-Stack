@@ -10,5 +10,8 @@ export const GET_EXPENSES_ENDPOINT = "http://localhost:4000/user/getexpenses"
 
 
 // API endPoints for premium user 
-export const GET_LEADERBOARD_DATA = "http://localhost:5173/premium/getleaderboard"
+export const GET_LEADERBOARD_DATA = "http://localhost:4000/premium/getleaderboard"
 
+
+// API endpoints for authentication
+export const FORGOT_PWD_ENDPOINT = "http://localhost:4000/auth/forgotpassword"
