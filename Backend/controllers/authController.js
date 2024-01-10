@@ -1,7 +1,9 @@
 const { generateToken, decodeToken } = require('../helperFunctions')
 const userModel = require('../models/userModel')
+const forgotPwdModel = require("../models/forgotPassowrdModel")
 const bcrypt = require('bcrypt')
 const sib = require("sib-api-v3-sdk")
+const { v4: uuidv4 } = require('uuid');
 require('dotenv').config()
 
 const authController = {
@@ -89,6 +91,7 @@ const authController = {
 
         try {
             const user = await userModel.findOne({ where: { userEmail: email } })
+
             if (user) {
                 const id = user.id
                 const client = sib.ApiClient.instance;
@@ -99,14 +102,14 @@ const authController = {
                 // sender and receivers
                 const sender = { email: "admin@budgetbuddy.com" };
                 const receivers = [{ email }];
-
+                const uniqueString = uuidv4()
+                await forgotPwdModel.create({ isActive: true, id: uniqueString, userId: id })
                 await transEmailApi.sendTransacEmail({
                     sender,
                     to: receivers,
                     subject: "Forgot Password From BudgetBuddy",
-                    htmlContent: `<a href= http://localhost:4000/auth/showforgotpasswordform/${id}>Update Password</a>`
+                    htmlContent: `<a href= http://localhost:4000/auth/showforgotpasswordform/${uniqueString}>Update Password</a>`
                 });
-
                 res.status(200).json({ message: 'Password reset email sent successfully.' });
             }
             else {
@@ -121,27 +124,37 @@ const authController = {
     showForgotPasswordForm: async (req, res) => {
         const { id } = req.params
         if (id) {
-            res.status(200).send(`<html>
-            <script>
-                function formsubmitted(e){
-                    e.preventDefault();
-                    console.log('called')
+            try {
+                const forgotPwdRequest = await forgotPwdModel.findOne({ where: { id: id } })
+                console.log(forgotPwdRequest)
+                if (forgotPwdRequest.isActive) {
+                    await forgotPwdRequest.update({ isActive: false })
+                    res.status(200).send(`<html>
+                    <form action="/auth/updatepassword/${id}" method="get">
+                        <label for="newpassword">Enter New password</label>
+                        <input name="newpassword" type="password" required></input>
+                        <button>reset password</button>
+                    </form>
+                </html>`)
                 }
-            </script>
-
-            <form action="/auth/updatepassword/${id}" method="get">
-                <label for="newpassword">Enter New password</label>
-                <input name="newpassword" type="password" required></input>
-                <button>reset password</button>
-            </form>
-        </html>`)
+                else {
+                    res.status(200).send(`<html>
+                    <h1>Forgot Password link expire</h1>
+                    <h1>Please genarate a fresh request</h1>
+                </html>`)
+                }
+            } catch (error) {
+                console.log(error)
+                res.status(400).send({ message: "some thing went Wrong" })
+            }
         }
     },
     updatePassword: async (req, res) => {
         const { id } = req.params
         const { newpassword } = req.query
         try {
-            const user = await userModel.findOne({ where: { id: id } })
+            const generatedUser = await forgotPwdModel.findOne({ where: { id: id } })
+            const user = await userModel.findOne({ where: { id: generatedUser.userId } })
             const hashPwd = await bcrypt.hash(newpassword, 10)
             await user.update({ userPwd: hashPwd })
             res.send("<h1>Your Passowrd sucessfully updated</h1>")
@@ -156,3 +169,4 @@ const authController = {
 module.exports = authController
 
 // http://localhost:4000/auth/upadateforgotpassword
+
