@@ -1,4 +1,4 @@
-const { onUserLogin, onUserSignUp, authenticateUser, onUserForgotPassword } = require('../controllers/authController')
+const { onUserLogin, onUserSignUp, authenticateUser, onUserForgotPassword, showForgotPasswordForm, updatePassword } = require('../controllers/authController')
 const express = require('express')
 
 const router = express.Router()
@@ -10,6 +10,11 @@ router.post('/signup', onUserSignUp)
 router.post('/login', onUserLogin)
 
 router.post('/forgotpassword', onUserForgotPassword)
+
+router.get('/showforgotpasswordform/:id', showForgotPasswordForm)
+
+router.get('/updatepassword/:id', updatePassword)
+
 
 
 
