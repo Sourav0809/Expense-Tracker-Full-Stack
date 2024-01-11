@@ -9,6 +9,7 @@ import {
 import LeaderBoard from "../leaderboard/LeaderBoard";
 import { useNavigate } from "react-router-dom";
 import { logOutAction } from "../../store/actions/authActions";
+import DownloadExpenses from "../pdf/downloadExpenses";
 const ExpenseContainer = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -21,7 +22,6 @@ const ExpenseContainer = () => {
     dispatch(getExpensesAction());
   }, []);
 
-  console.log(leaderBoard);
   // when user want to buy premium
   const buyPremiumHandeler = async () => {
     const token = localStorage.getItem("token");
@@ -93,6 +93,7 @@ const ExpenseContainer = () => {
             })}
         </div>
       )}
+      {isPremiumUser && <DownloadExpenses />}
     </div>
   );
 };
