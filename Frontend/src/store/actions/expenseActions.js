@@ -12,8 +12,9 @@ export const setExpensesAction = (expense) => {
             if (data) {
                 expense.id = data.id
                 const prevExpenses = getState().expenses.expenses
+                const { expensesLength } = getState().expenses
                 const newExpenses = [...prevExpenses, expense]
-                dispatch(setExpenses(newExpenses))
+                dispatch(setExpenses({ expenses: newExpenses, expensesLength: expensesLength + 1 }))
             }
 
         } catch (err) {
@@ -24,14 +25,14 @@ export const setExpensesAction = (expense) => {
 
 
 // for getting all the expenses
-export const getExpensesAction = () => {
+export const getExpensesAction = (rowsperpage, page) => {
+    console.log(rowsperpage, page)
     return async (dispatch) => {
         try {
             const token = localStorage.getItem('token')
-            const { data } = await axios.get(GET_EXPENSES_ENDPOINT, { headers: { token: token } })
-            console.log(data)
+            const { data } = await axios.get(`http://localhost:4000/user/getexpenses?rowsperpage=${rowsperpage}&page=${page + 1}`, { headers: { token: token } })
             if (data) {
-                dispatch(setExpenses(data.expenses))
+                dispatch(setExpenses({ expenses: data.expenses, expensesLength: data.expensesLength }))
                 if (data.isPremiumUser) {
                     dispatch(setIsPremium())
                 }
@@ -53,8 +54,9 @@ export const deleteExpenseAction = (id) => {
             const { data } = await axios.delete(DELETE_EXPENSE_ENDPOINT, { data: { id: id }, headers: { token: token } })
             if (data) {
                 const allExpenses = getState().expenses.expenses
+                const { expensesLength } = getState().expenses
                 const filteredExpenses = allExpenses.filter(val => val.id !== id)
-                dispatch(setExpenses(filteredExpenses))
+                dispatch(setExpenses({ expenses: filteredExpenses, expensesLength: expensesLength - 1 }))
             }
         } catch (error) {
             console.log(error)

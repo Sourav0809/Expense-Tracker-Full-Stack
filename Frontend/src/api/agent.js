@@ -8,7 +8,7 @@ export const GET_DOWNLOADED_FILES = "http://localhost:4000/premium/alldownlaodli
 // API endpoints for EXPENSES
 export const ADD_EXPENSE_ENDPOINT = "http://localhost:4000/user/addexpense"
 export const DELETE_EXPENSE_ENDPOINT = "http://localhost:4000/user/deleteexpense"
-export const GET_EXPENSES_ENDPOINT = "http://localhost:4000/user/getexpenses"
+export const GET_EXPENSES_ENDPOINT = "http://localhost:4000/user/getexpenses?rowsperpage=10&page=1"
 
 
 // API endPoints for premium user 

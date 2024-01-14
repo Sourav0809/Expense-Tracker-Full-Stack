@@ -28,12 +28,18 @@ const expenseController = {
 
     // when user want to fecth all expenses 
     getExpense: async (req, res) => {
+        const { rowsperpage, page } = req.query
         const { userEmail, id, isPremiumUser, totalTransaction } = req.user
+
         try {
             if (userEmail && id) {
                 const allExpenses = await expenseModel.findAll({ where: { userId: id } })
+                const startIndex = (page - 1) * rowsperpage
+                const endIndex = page * rowsperpage
+                const slicedExpense = allExpenses.slice(startIndex, endIndex)
                 const userExpenses = {
-                    expenses: allExpenses,
+                    expenses: slicedExpense,
+                    expensesLength: allExpenses.length,
                     isPremiumUser,
                     totalTransaction
                 }

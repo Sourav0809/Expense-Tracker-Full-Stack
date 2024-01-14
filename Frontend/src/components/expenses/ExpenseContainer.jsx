@@ -1,4 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
+import * as React from "react";
+import TablePagination from "@mui/material/TablePagination";
+
 import Expense from "./ui/Expense";
 import { useEffect, useState } from "react";
 import { getExpensesAction } from "../../store/actions/expenseActions";
@@ -11,28 +14,43 @@ import LeaderBoard from "../leaderboard/LeaderBoard";
 import { useNavigate } from "react-router-dom";
 import { logOutAction } from "../../store/actions/authActions";
 import { getDownloadedExpensesAction } from "../../store/actions/PremiumActions";
+
 const ExpenseContainer = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showLeaderboard, setShowLeaderBoard] = useState(false);
-  const { expenses } = useSelector((state) => state.expenses);
+  const { expenses, expensesLength } = useSelector((state) => state.expenses);
   const { isPremiumUser, leaderBoard, downloadLinks } = useSelector(
     (state) => state.premium
   );
+
+  // pagination
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    console.log(event.target.value);
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   // useffect for fetching all the expenses & download links on the page refresh
   useEffect(() => {
     (async () => {
       try {
         await Promise.all([
-          dispatch(getExpensesAction()),
+          dispatch(getExpensesAction(rowsPerPage, page)),
           dispatch(getDownloadedExpensesAction()),
         ]);
       } catch (error) {
         console.log(error);
       }
     })();
-  }, []);
+  }, [page, rowsPerPage]);
 
   // when user want to buy premium
   const buyPremiumHandeler = async () => {
@@ -60,8 +78,6 @@ const ExpenseContainer = () => {
     localStorage.clear();
   };
 
-  console.log(downloadLinks);
-
   return (
     <div className=" mt-10 flex flex-col gap-2">
       <div className="flex justify-center items-center gap-2 ">
@@ -83,6 +99,16 @@ const ExpenseContainer = () => {
         >
           Log Out
         </button>
+
+        {/* pagination component */}
+        <TablePagination
+          component="div"
+          count={expensesLength == 0 ? 0 : expensesLength}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </div>
 
       {expenses.map((values) => {

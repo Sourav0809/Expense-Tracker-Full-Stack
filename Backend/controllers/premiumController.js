@@ -45,7 +45,6 @@ const premiumController = {
         const { id } = req.user
         try {
             const fetchDownLoadLinks = await downloadExpensesModel.findAll({ where: { userId: id } })
-            console.log(fetchDownLoadLinks)
             res.send(fetchDownLoadLinks)
 
         } catch (error) {
