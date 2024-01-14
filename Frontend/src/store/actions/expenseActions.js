@@ -6,7 +6,6 @@ import { setIsPremium } from "../reducers/premiumSlice";
 // for storing a new expense
 export const setExpensesAction = (expense) => {
     return async (dispatch, getState) => {
-
         try {
             const token = localStorage.getItem('token')
             const { data } = await axios.post(ADD_EXPENSE_ENDPOINT, expense, { headers: { token: token } })

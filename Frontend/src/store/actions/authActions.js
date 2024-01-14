@@ -2,6 +2,7 @@ import axios from "axios"
 import { setUserLogin } from "../reducers/authSlice"
 import { setUserLogOut } from "../reducers/authSlice"
 import { FORGOT_PWD_ENDPOINT } from "../../api/agent"
+
 export const loginAction = () => {
     return (dispatch) => {
         dispatch(setUserLogin())

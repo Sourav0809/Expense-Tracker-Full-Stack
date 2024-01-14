@@ -21,6 +21,8 @@ const userModel = require('./models/userModel')
 const expenseModel = require('./models/expenseModel')
 const orderModel = require("./models/orderModel")
 const forgotPwdModel = require('./models/forgotPassowrdModel')
+const downloadExpensesModel = require('./models/donwloadExpensesModel')
+
 
 const app = express()
 
@@ -42,7 +44,8 @@ userModel.hasMany(orderModel)
 orderModel.belongsTo(userModel)
 userModel.hasMany(forgotPwdModel)
 forgotPwdModel.belongsTo(userModel)
-
+userModel.hasMany(downloadExpensesModel)
+downloadExpensesModel.belongsTo(userModel)
 
 // sync database and listen
 db.sync()

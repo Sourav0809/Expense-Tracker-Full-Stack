@@ -2,6 +2,8 @@
 export const BUY_PREMIUM_ENDPOINT = "http://localhost:4000/payment/buypremium";
 export const UPDATE_PREMIUM_ENDPOINT = "http://localhost:4000/payment/updatepremiumstatus";
 export const UPDATE_STATUS_FAILED = "http://localhost:4000/payment/updatepremiumstatustofailed"
+export const DOWNLOAD_EXPENSE_ENDPOINT = "http://localhost:4000/premium/downloadexpenses"
+export const GET_DOWNLOADED_FILES = "http://localhost:4000/premium/alldownlaodlinks"
 
 // API endpoints for EXPENSES
 export const ADD_EXPENSE_ENDPOINT = "http://localhost:4000/user/addexpense"

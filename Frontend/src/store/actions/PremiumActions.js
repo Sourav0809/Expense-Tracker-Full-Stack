@@ -1,5 +1,12 @@
-import { setIsPremium, setLeaderBoard } from "../reducers/premiumSlice";
-import { BUY_PREMIUM_ENDPOINT, UPDATE_PREMIUM_ENDPOINT, UPDATE_STATUS_FAILED, } from "../../api/agent";
+import { setIsPremium, setLeaderBoard, setDownloadLink } from "../reducers/premiumSlice";
+import {
+    BUY_PREMIUM_ENDPOINT,
+    UPDATE_PREMIUM_ENDPOINT,
+    UPDATE_STATUS_FAILED,
+    DOWNLOAD_EXPENSE_ENDPOINT,
+    GET_DOWNLOADED_FILES
+} from "../../api/agent";
+
 import axios from "axios";
 
 export const buyPremiumAction = (token) => {
@@ -61,3 +68,39 @@ export const getLeaderBoardAction = () => {
 }
 
 
+// downlaod expenses action 
+export const downloadExpensesAction = () => {
+    return async (dispatch, getState) => {
+        try {
+            const token = localStorage.getItem("token");
+            const { data } = await axios.get(DOWNLOAD_EXPENSE_ENDPOINT, { headers: { token: token } });
+
+            // getting the downlaod link
+            const oldDownlaodLinks = getState().premium.downloadLinks
+
+            // now storing the all links 
+            dispatch(setDownloadLink([...oldDownlaodLinks, data]))
+
+            // Open the file URL in a new tab
+            window.open(data.downloadLink, "_blank");
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+}
+
+
+// GET ALL DOWNLOADED FILES
+
+export const getDownloadedExpensesAction = () => {
+    return async (dispatch) => {
+        try {
+            const token = localStorage.getItem("token");
+            const { data } = await axios.get(GET_DOWNLOADED_FILES, { headers: { token: token } });
+            dispatch(setDownloadLink(data))
+        } catch (error) {
+            console.log(error)
+        }
+    }
+}
