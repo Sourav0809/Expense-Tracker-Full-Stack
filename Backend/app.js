@@ -1,8 +1,12 @@
 const express = require('express')
+const fs = require('fs')
+const path = require('path')
 
 // importing middlewares 
 const cors = require('cors')
 const bodyParser = require('body-parser')
+const helmet = require('helmet')
+const morgan = require('morgan')
 
 // importing env
 require('dotenv').config()
@@ -24,12 +28,17 @@ const forgotPwdModel = require('./models/forgotPassowrdModel')
 const downloadExpensesModel = require('./models/donwloadExpensesModel')
 
 
+const accessLogStream = fs.createWriteStream(path.join(__dirname, "access.log"), { flags: "a" })
 const app = express()
 
+
+
 // applying middlewares
+app.use(helmet())
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+app.use(morgan('combined', { stream: accessLogStream }))
 
 //applying routes
 app.use('/auth', authRoutes)

@@ -30,7 +30,6 @@ const expenseController = {
     getExpense: async (req, res) => {
         const { rowsperpage, page } = req.query
         const { userEmail, id, isPremiumUser, totalTransaction } = req.user
-
         try {
             if (userEmail && id) {
                 const allExpenses = await expenseModel.findAll({ where: { userId: id } })

@@ -1,16 +1,15 @@
 const sequelize = require('../util/database')
 const Razorpay = require("razorpay")
 const orderModel = require('../models/orderModel')
-const { RZP_KEY_ID, RZP_KEY_SECRET } = require('../constants')
+require("dotenv").config()
 
 const paymentController = {
     buyPremium: async (req, res) => {
         const { id } = req.user
         try {
-
             const rzp = new Razorpay({
-                key_id: RZP_KEY_ID,
-                key_secret: RZP_KEY_SECRET
+                key_id: process.env.RZP_KEY_ID,
+                key_secret: process.env.RZP_KEY_SECRET
             })
             const amount = 2500
             rzp.orders.create({ amount: amount, currency: 'INR' }, async (err, order) => {
@@ -19,9 +18,10 @@ const paymentController = {
                         throw new Error(JSON.stringify(err))
                     }
                     await orderModel.create({ orderId: order.id, status: "pending", userId: id })
-                    res.send({ order, key_id: RZP_KEY_ID }).json()
+                    res.send({ order, key_id: process.env.RZP_KEY_ID })
 
                 } catch (error) {
+                    console.log(error)
                     res.status(400).send({ message: "Some error", error: error })
                 }
 
