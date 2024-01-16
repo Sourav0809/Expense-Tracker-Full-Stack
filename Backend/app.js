@@ -8,7 +8,7 @@ const bodyParser = require('body-parser')
 const helmet = require('helmet')
 const morgan = require('morgan')
 
-// importing env
+// configuring env
 require('dotenv').config()
 
 // importing routes
