@@ -2,7 +2,7 @@ import React from "react";
 import AddExpenseForm from "../components/expenses/ui/AddExpenseForm";
 import ExpenseContainer from "../components/expenses/expenseContainer";
 
-const ExpensePage = () => {
+const AllExpenses = () => {
   return (
     <div>
       <AddExpenseForm />
@@ -11,4 +11,4 @@ const ExpensePage = () => {
   );
 };
 
-export default ExpensePage;
+export default AllExpenses;

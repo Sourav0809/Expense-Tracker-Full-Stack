@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import AuthPage from "../pages/AuthPage";
-import ExpensePage from "../pages/ExpensePage";
+import AllExpenses from "../pages/AllExpneses";
 import { useSelector } from "react-redux";
 
 const MyRoutes = () => {
@@ -9,10 +9,10 @@ const MyRoutes = () => {
     <Routes>
       {isUserLoggedIn ? (
         <>
-          <Route path="/" element={<ExpensePage />} />
-          <Route path="/auth" element={<ExpensePage />} />
-          <Route path="/expenses" element={<ExpensePage />} />
-          <Route path="*" element={<ExpensePage />} />
+          <Route path="/" element={<AllExpenses />} />
+          <Route path="/auth" element={<AllExpenses />} />
+          <Route path="/expenses" element={<AllExpenses />} />
+          <Route path="*" element={<AllExpenses />} />
         </>
       ) : (
         <>
