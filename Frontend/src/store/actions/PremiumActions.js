@@ -58,7 +58,7 @@ export const buyPremiumAction = (token) => {
 export const getLeaderBoardAction = () => {
     return async (dispatch, getState) => {
         try {
-            const { data } = await axios.get('http://localhost:4000/premium/getleaderboard')
+            const { data } = await axios.get('/premium/getleaderboard')
             dispatch(setLeaderBoard(data))
         } catch (error) {
             console.log(error)

@@ -45,10 +45,7 @@ const Authentication = () => {
       /* -------------------------------------------------------------------------- */
 
       if (!loggedIn && !onForgotPwd) {
-        const { data } = await axios.post(
-          "http://localhost:4000/auth/signup",
-          signupInfo
-        );
+        const { data } = await axios.post("/auth/signup", signupInfo);
 
         // storing the token into local storage
         if (data) {
@@ -68,10 +65,7 @@ const Authentication = () => {
           userPwd,
         };
 
-        const { data } = await axios.post(
-          "http://localhost:4000/auth/login",
-          loginInfo
-        );
+        const { data } = await axios.post("/auth/login", loginInfo);
 
         // storing the token into local storage
         if (data) {

@@ -108,7 +108,7 @@ const authController = {
                     sender,
                     to: receivers,
                     subject: "Forgot Password From BudgetBuddy",
-                    htmlContent: `<a href= http://localhost:4000/auth/showforgotpasswordform/${uniqueString}>Update Password</a>`
+                    htmlContent: `<a href= /auth/showforgotpasswordform/${uniqueString}>Update Password</a>`
                 });
                 res.status(200).json({ message: 'Password reset email sent successfully.' });
             }
@@ -168,5 +168,5 @@ const authController = {
 
 module.exports = authController
 
-// http://localhost:4000/auth/upadateforgotpassword
+// /auth/upadateforgotpassword
 

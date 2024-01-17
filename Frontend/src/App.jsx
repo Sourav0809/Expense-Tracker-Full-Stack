@@ -4,6 +4,7 @@ import { loginAction } from "./store/actions/authActions";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+
 const App = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const App = () => {
       try {
         const token = localStorage.getItem("token");
         if (token) {
-          await axios.post("http://localhost:4000/auth/authenticateuser", {
+          await axios.post("/auth/authenticateuser", {
             token: token,
           });
           dispatch(loginAction());
