@@ -14,7 +14,7 @@ const App = () => {
       try {
         const token = localStorage.getItem("token");
         if (token) {
-          await axios.post("/auth/authenticateuser", {
+          await axios.post("auth/authenticateuser", {
             token: token,
           });
           dispatch(loginAction());
